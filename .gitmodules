@@ -1,0 +1,4 @@
+[submodule "libdave"]
+	path = libdave
+	url = git@github.com:MinnDevelopment/libdave.git
+	branch = feature/gradle
