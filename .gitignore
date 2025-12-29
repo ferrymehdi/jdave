@@ -1,0 +1,19 @@
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+.kotlin
+
+### IntelliJ IDEA ###
+*.iws
+*.iml
+*.ipr
+
+### Mac OS ###
+.DS_Store
+
+### Natives ###
+*.so
+*.dll
+*.dylib
