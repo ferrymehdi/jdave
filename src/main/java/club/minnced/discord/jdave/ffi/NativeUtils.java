@@ -15,7 +15,11 @@ public class NativeUtils {
         return segment == null || MemorySegment.NULL.equals(segment);
     }
 
-    public static Object toSizeT(long number) {
+    static Object toSizeT(long number) {
         return LibDave.C_SIZE.byteSize() == 8 ? number : (int) number;
+    }
+
+    static long sizeToLong(@NonNull Object size) {
+        return ((Number) size).longValue();
     }
 }

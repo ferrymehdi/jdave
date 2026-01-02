@@ -119,7 +119,8 @@ public class LibDaveEncryptorBinding {
 
     public static long getMaxCiphertextByteSize(@NonNull MemorySegment encryptor, int mediaType, long frameSize) {
         try {
-            return sizeToLong(daveEncryptorGetMaxCiphertextByteSize.invoke(encryptor, mediaType, toSizeT(frameSize)));
+            return NativeUtils.sizeToLong(
+                    daveEncryptorGetMaxCiphertextByteSize.invoke(encryptor, mediaType, toSizeT(frameSize)));
         } catch (Throwable e) {
             throw new LibDaveBindingException(e);
         }

@@ -3,6 +3,7 @@ package club.minnced.discord.jdave.ffi;
 import static java.lang.foreign.ValueLayout.*;
 
 import club.minnced.discord.jdave.DaveLoggingSeverity;
+import club.minnced.discord.jdave.utils.DaveLogger;
 import club.minnced.discord.jdave.utils.NativeLibraryLoader;
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
@@ -11,7 +12,6 @@ import java.lang.invoke.MethodType;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 public class LibDave {
     static final Linker LINKER = Linker.nativeLinker();
@@ -47,25 +47,7 @@ public class LibDave {
             throw new ExceptionInInitializerError(e);
         }
 
-        setLogSinkCallback(Arena.global(), (severity, file, line, message) -> {
-            Level level =
-                    switch (severity) {
-                        case UNKNOWN -> Level.INFO;
-                        case VERBOSE -> Level.TRACE;
-                        case INFO -> Level.INFO;
-                        case WARNING -> Level.WARN;
-                        case ERROR -> Level.ERROR;
-                        case NONE -> Level.INFO;
-                    };
-
-            int pathSeparatorIndex = Math.max(file.lastIndexOf('/'), file.lastIndexOf('\\'));
-            String fileName = file;
-            if (pathSeparatorIndex >= 0) {
-                fileName = file.substring(pathSeparatorIndex + 1);
-            }
-
-            log.atLevel(level).log("{}:{} {}", fileName, line, message);
-        });
+        DaveLogger.init();
     }
 
     public static void free(@NonNull MemorySegment segment) {
@@ -82,10 +64,6 @@ public class LibDave {
         } else {
             return segment.get(JAVA_LONG, 0);
         }
-    }
-
-    static long sizeToLong(@NonNull Object size) {
-        return ((Number) size).longValue();
     }
 
     public static short getMaxSupportedProtocolVersion() {
@@ -115,7 +93,7 @@ public class LibDave {
     //                                    int line,
     //                                    const char* message);
     public interface LogSinkCallback {
-        void onLogSink(@NonNull DaveLoggingSeverity severity, @NonNull String file, int line, @NonNull String message);
+        void onLogSink(@NonNull DaveLoggingSeverity severity, @NonNull String file, int line, @NonNull Object message);
     }
 
     private static class LogSinkCallbackMapper {

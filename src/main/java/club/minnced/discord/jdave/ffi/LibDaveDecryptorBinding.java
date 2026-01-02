@@ -86,7 +86,7 @@ public class LibDaveDecryptorBinding {
     public static long getMaxPlaintextByteSize(
             @NonNull MemorySegment decryptor, @NonNull DaveMediaType mediaType, long encryptedFrameSize) {
         try {
-            return sizeToLong(daveDecryptorGetMaxPlaintextByteSize.invoke(
+            return NativeUtils.sizeToLong(daveDecryptorGetMaxPlaintextByteSize.invoke(
                     decryptor, mediaType.ordinal(), toSizeT(encryptedFrameSize)));
         } catch (Throwable e) {
             throw new LibDaveBindingException(e);
