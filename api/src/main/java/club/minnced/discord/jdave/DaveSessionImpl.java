@@ -12,25 +12,19 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public class DaveSessionImpl implements AutoCloseable {
-    private final Arena arena;
     private final MemorySegment session;
 
-    private DaveSessionImpl(@NonNull Arena arena, @NonNull MemorySegment session) {
-        this.arena = arena;
+    private DaveSessionImpl(@NonNull MemorySegment session) {
         this.session = session;
     }
 
     @NonNull
     public static DaveSessionImpl create(@Nullable String authSessionId) {
-        Arena arena = Arena.ofConfined();
         try (Arena local = Arena.ofConfined()) {
             MemorySegment authSessionIdSegment =
                     authSessionId != null ? local.allocateFrom(authSessionId) : MemorySegment.NULL;
             MemorySegment session = LibDaveSessionBinding.createSession(MemorySegment.NULL, authSessionIdSegment);
-            return new DaveSessionImpl(arena, session);
-        } catch (Throwable e) {
-            arena.close();
-            throw e;
+            return new DaveSessionImpl(session);
         }
     }
 
@@ -121,7 +115,6 @@ public class DaveSessionImpl implements AutoCloseable {
     @Override
     public void close() {
         this.destroy();
-        this.arena.close();
     }
 
     public sealed interface CommitResult {

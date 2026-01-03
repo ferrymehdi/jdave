@@ -9,16 +9,14 @@ import java.nio.ByteBuffer;
 import org.jspecify.annotations.NonNull;
 
 public class DaveDecryptor implements AutoCloseable {
-    private final Arena arena;
     private final MemorySegment decryptor;
 
-    private DaveDecryptor(@NonNull Arena arena, @NonNull MemorySegment decryptor) {
-        this.arena = arena;
+    private DaveDecryptor(@NonNull MemorySegment decryptor) {
         this.decryptor = decryptor;
     }
 
     public static DaveDecryptor create() {
-        return new DaveDecryptor(Arena.ofConfined(), LibDaveDecryptorBinding.createDecryptor());
+        return new DaveDecryptor(LibDaveDecryptorBinding.createDecryptor());
     }
 
     private void destroy() {
@@ -69,7 +67,6 @@ public class DaveDecryptor implements AutoCloseable {
     @Override
     public void close() {
         destroy();
-        arena.close();
     }
 
     public record DaveDecryptResult(@NonNull DaveDecryptResultType type, long bytesWritten) {}

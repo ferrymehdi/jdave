@@ -10,19 +10,17 @@ import java.nio.ByteBuffer;
 import org.jspecify.annotations.NonNull;
 
 public class DaveEncryptor implements AutoCloseable {
-    private final Arena arena;
     private final MemorySegment encryptor;
     private final DaveSessionImpl session;
 
-    private DaveEncryptor(@NonNull Arena arena, @NonNull MemorySegment encryptor, @NonNull DaveSessionImpl session) {
-        this.arena = arena;
+    private DaveEncryptor(@NonNull MemorySegment encryptor, @NonNull DaveSessionImpl session) {
         this.encryptor = encryptor;
         this.session = session;
     }
 
     @NonNull
     public static DaveEncryptor create(DaveSessionImpl session) {
-        return new DaveEncryptor(Arena.ofConfined(), LibDaveEncryptorBinding.createEncryptor(), session);
+        return new DaveEncryptor(LibDaveEncryptorBinding.createEncryptor(), session);
     }
 
     private void destroy() {
@@ -80,7 +78,6 @@ public class DaveEncryptor implements AutoCloseable {
     @Override
     public void close() {
         this.destroy();
-        this.arena.close();
     }
 
     public record DaveEncryptorResult(@NonNull DaveEncryptResultType type, long bytesWritten) {}
