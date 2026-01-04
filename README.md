@@ -49,6 +49,29 @@ JDABuilder.createLight(TOKEN)
   .build()
 ```
 
+## Restricted Methods Warning
+
+When you use this library, you will receive warnings due to usage of [restricted methods](https://docs.oracle.com/en/java/javase/25/core/restricted-methods.html) like this:
+
+```
+WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by club.minnced.discord.jdave.utils.NativeLibraryLoader in an unnamed module (file:.../jdave-api-0.0.1.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+```
+
+To remove these warnings, you need to either allow these methods through the command line arguments:
+
+```shell
+java --enable-native-access=ALL-UNNAMED ...
+```
+
+Or enabling them in your JAR-file manifest:
+
+```shell
+Enable-Native-Access: ALL-UNNAMED
+```
+
 ## Why Java 25?
 
 This library uses the [Foreign Function & Memory (FFM) API](https://docs.oracle.com/en/java/javase/22/core/foreign-function-and-memory-api.html) which has been stabilized in Java 22.
@@ -62,7 +85,3 @@ Other alternatives have downsides compared to the newer FFM API:
 - JNA is also a massive library, which is a dependency we can avoid by using Java's standard library entirely.
 
 For this reason, I've chosen to use the new FFM API instead. The optimal solution would be a full Java implementation, instead of relying on native libraries. But that requires a lot more time, which we don't have right now.
-
----
-
-# ⚠️ This implementation is work-in-progress and not completed.
