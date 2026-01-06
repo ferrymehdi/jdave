@@ -20,6 +20,10 @@ Linux:
 
 [![](https://img.shields.io/maven-central/v/club.minnced/jdave-native-linux-x86-64?color=blue&label=linux-x86-64&logo=linux&logoColor=white)](https://search.maven.org/artifact/club.minnced/jdave-native-linux-x86-64)
 
+Windows:
+
+[![](https://img.shields.io/maven-central/v/club.minnced/jdave-native-windows-x86-64?color=blue&label=windows-x86-64)](https://search.maven.org/artifact/club.minnced/jdave-native-windows-x86-64)
+
 ## Installation
 
 The coordinates for the dependency include the target platform, currently only one is supported.
