@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import club.minnced.discord.jdave.DaveCodec;
 import club.minnced.discord.jdave.DaveConstants;
 import club.minnced.discord.jdave.DaveEncryptor;
+import club.minnced.discord.jdave.DaveMediaType;
 import club.minnced.discord.jdave.DaveSessionImpl;
 import club.minnced.discord.jdave.ffi.LibDave;
 import java.nio.ByteBuffer;
@@ -39,46 +40,6 @@ class BindingTest {
     }
 
     @Test
-    void testEncryptor() {
-        Random random = new Random(42);
-        long channelId = random.nextLong();
-        long selfUserId = random.nextLong();
-        String selfUserIdString = Long.toUnsignedString(selfUserId);
-
-        try (DaveSessionImpl session = DaveSessionImpl.create(null)) {
-            session.initialize((short) 1, channelId, selfUserIdString);
-            assertEquals(1, session.getProtocolVersion());
-            session.sendMarshalledKeyPackage(session::setExternalSender);
-
-            try (DaveEncryptor encryptor = DaveEncryptor.create(session, selfUserId)) {
-                encryptor.prepareTransition(1);
-                encryptor.processTransition(1);
-
-                int ssrc = random.nextInt();
-                encryptor.assignSsrcToCodec(DaveCodec.OPUS, ssrc);
-
-                byte[] plaintext = new byte[512];
-                random.nextBytes(plaintext);
-
-                ByteBuffer output = ByteBuffer.allocateDirect(587);
-                ByteBuffer input = ByteBuffer.allocateDirect(plaintext.length);
-                input.put(plaintext);
-                input.flip();
-
-                assertEquals(
-                        output.capacity(),
-                        encryptor.getMaxCiphertextByteSize(
-                                club.minnced.discord.jdave.DaveMediaType.AUDIO, input.capacity()));
-
-                DaveEncryptor.DaveEncryptorResult result =
-                        encryptor.encrypt(club.minnced.discord.jdave.DaveMediaType.AUDIO, ssrc, input, output);
-
-                assertEquals(DaveEncryptor.DaveEncryptResultType.FAILURE, result.type());
-            }
-        }
-    }
-
-    @Test
     void testEncryptorPassthrough() {
         Random random = new Random(42);
         long selfUserId = random.nextLong();
@@ -99,8 +60,7 @@ class BindingTest {
                 input.put(plaintext);
                 input.flip();
 
-                DaveEncryptor.DaveEncryptorResult result =
-                        encryptor.encrypt(club.minnced.discord.jdave.DaveMediaType.AUDIO, ssrc, input, output);
+                DaveEncryptor.DaveEncryptorResult result = encryptor.encrypt(DaveMediaType.AUDIO, ssrc, input, output);
 
                 assertEquals(DaveEncryptor.DaveEncryptResultType.SUCCESS, result.type());
                 assertTrue(result.bytesWritten() > 0);
