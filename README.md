@@ -6,6 +6,9 @@ This library provides java bindings for [libdave](https://github.com/discord/lib
 
 To implement these bindings, this library uses Java **Foreign Function & Memory API** (FFM).
 
+> [!WARNING]
+> This library is still very new and only tested at small scale. I recommend to test your setup thoroughly in a staging or testing environment before going into production. Please report any issues you run into and keep a close look for potential memory leaks or unexpected errors.
+
 ## Requirements
 
 - Java 25
